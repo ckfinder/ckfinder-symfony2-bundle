@@ -10,17 +10,14 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0",
+        "php": ">=5.6.0",
         "symfony/framework-bundle": "~2.4",
         "symfony/form": "~2.4",
         "pimple/pimple": "~3.0",
         "monolog/monolog": "~1.4,>=1.4.1",
-        "league/flysystem": "1.0.14",
-        "league/flysystem-dropbox": "1.0.0",
-        "dropbox/dropbox-sdk": "~1.1.1",
-        "aws/aws-sdk-php": "~2.7.17",
-        "league/flysystem-aws-s3-v2": "1.0.3",
-        "league/flysystem-cached-adapter": "1.0.2"
+        "league/flysystem": "^1.0.37",
+        "league/flysystem-aws-s3-v3": "^1.0.13",
+        "league/flysystem-cached-adapter": "^1.0.6"
     },
     "autoload": {
         "psr-4": {

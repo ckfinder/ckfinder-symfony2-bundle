@@ -47,8 +47,8 @@ This repository contains the CKFinder 3 bundle for Symfony 2.
 	# app/config/routing.yml
 	
 	ckfinder_connector:
-		resource: "@CKSourceCKFinderBundle/Resources/config/routing.yml"
-		prefix:   /
+	    resource: "@CKSourceCKFinderBundle/Resources/config/routing.yml"
+	    prefix:   /
 	```
 
 5. Create a directory for CKFinder files and allow for write access to it. By default CKFinder expects it to be placed in `web/userfiles` (this can be altered in configuration).
