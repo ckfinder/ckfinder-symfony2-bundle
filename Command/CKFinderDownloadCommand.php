@@ -12,10 +12,13 @@
 namespace CKSource\Bundle\CKFinderBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Helper\ProgressHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * Class CKFinderDownloadCommand
@@ -68,8 +71,14 @@ class CKFinderDownloadCommand extends ContainerAwareCommand
             }
         }
 
-        /* @var $progressBar \Symfony\Component\Console\Helper\ProgressHelper */
-        $progressBar = $this->getHelperSet()->get('progress');
+        if (version_compare(Kernel::VERSION, '2.6', '<')) {
+            // ProgressHelper became deprecated in 2.5; however we're checking
+            // for 2.6 because this introduces ->setProgress to supercede ->setCurrent
+            // used below.
+            $progressBar = $this->getHelperSet()->get('progress');
+        } else {
+            $progressBar = new ProgressBar($output);
+        }
 
         $maxBytes = 0;
         $ctx = stream_context_create(array(), array(
@@ -78,10 +87,18 @@ class CKFinderDownloadCommand extends ContainerAwareCommand
                 switch ($notificationCode) {
                     case STREAM_NOTIFY_FILE_SIZE_IS:
                         $maxBytes = $bytesMax;
-                        $progressBar->start($output, $bytesMax);
+                        if ($progressBar instanceof ProgressHelper) {
+                            $progressBar->start($output, $bytesMax);
+                        } else {
+                            $progressBar->start($bytesMax);
+                        }
                         break;
                     case STREAM_NOTIFY_PROGRESS:
-                        $progressBar->setCurrent($bytesTransferred);
+                        if ($progressBar instanceof ProgressHelper) {
+                            $progressBar->setCurrent($bytesTransferred);
+                        } else {
+                            $progressBar->setProgress($bytesTransferred);
+                        }
                         break;
                 }
             }
@@ -98,7 +115,11 @@ class CKFinderDownloadCommand extends ContainerAwareCommand
             return;
         }
 
-        $progressBar->setCurrent($maxBytes);
+        if ($progressBar instanceof ProgressHelper) {
+            $progressBar->setCurrent($maxBytes);
+        } else {
+            $progressBar->setProgress($maxBytes);
+        }
         $progressBar->finish();
 
         $output->writeln('Extracting CKFinder to the CKSourceCKFinderBundle::Resources/public directory.');
