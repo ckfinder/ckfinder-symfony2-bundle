@@ -27,7 +27,7 @@ use Symfony\Component\HttpKernel\Kernel;
  */
 class CKFinderDownloadCommand extends ContainerAwareCommand
 {
-    const ZIP_PACKAGE_URL = 'http://download.cksource.com/CKFinder/CKFinder%20for%20PHP/3.4.2/ckfinder_php_3.4.2.zip';
+    const ZIP_PACKAGE_URL = 'http://download.cksource.com/CKFinder/CKFinder%20for%20PHP/3.4.5/ckfinder_php_3.4.5.zip';
 
     /**
      * {@inheritdoc}
